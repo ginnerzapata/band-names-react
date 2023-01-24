@@ -10,7 +10,6 @@ export const useSocket = (serverPath) => {
     [serverPath]
   );
   useEffect(() => {
-    console.log({ socket });
     setOnline(socket.connected);
   }, [socket]);
 
