@@ -1,12 +1,12 @@
 import React from "react";
+import { useContext } from "react";
 import { useState, useEffect } from "react";
+import { SocketContext } from "../context/SocketContext";
 
-export const BandList = ({ data, vote, deleteBand, updateBandName }) => {
-  const [bands, setBands] = useState(data);
+export const BandList = () => {
+  const [bands, setBands] = useState([]);
+  const { socket } = useContext(SocketContext);
 
-  useEffect(() => {
-    setBands(data);
-  }, [data]);
   const handleName = (e, id) => {
     const updatedBands = bands.map((b) => {
       if (b.id === id) b.name = e.target.value;
@@ -18,6 +18,25 @@ export const BandList = ({ data, vote, deleteBand, updateBandName }) => {
   const handleBlur = (id, name) => {
     updateBandName(id, name);
   };
+  useEffect(() => {
+    socket.on("current-bands", (bands) => {
+      setBands(bands);
+    });
+    return () => socket.off("current-bands");
+  }, [socket]);
+
+  const vote = (id) => {
+    socket.emit("vote-band", id);
+  };
+
+  const deleteBand = (id) => {
+    socket.emit("delete-band", id);
+  };
+
+  const updateBandName = (id, name) => {
+    socket.emit("update-name", { name, id });
+  };
+
   const createRows = () => {
     return bands.map((b) => (
       <tr key={b.id}>

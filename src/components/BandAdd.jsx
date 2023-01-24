@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import { useSocket } from "../hooks/useSocket";
+import { useContext } from "react";
+import { SocketContext } from "../context/SocketContext";
 
 export const BandAdd = () => {
   const [value, setValue] = useState("");
-  const { socket } = useSocket("http://localhost:8080");
+  const { socket } = useContext(SocketContext);
   const handleSubmit = (e) => {
     e.preventDefault();
     if (value.trim().length > 0) {
